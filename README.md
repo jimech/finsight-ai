@@ -88,9 +88,55 @@ Open [http://localhost:3000](http://localhost:3000). You should see the FinSight
 
 ## Development notes
 
-- **Auth** (Clerk) and **AI** (OpenAI) are planned but not implemented in this ticket.
-- Database models, migrations, and dashboard pages are not included yet.
+- **Auth** (Clerk) and **AI** (OpenAI) are planned but not implemented yet.
+- Dashboard pages are not included yet.
 - See [docs/project-context.md](docs/project-context.md) for architecture and scope details.
+
+## Database setup
+
+The API uses SQLAlchemy 2.x with Alembic migrations against PostgreSQL.
+
+### 1. Ensure Postgres is running
+
+```bash
+docker compose up -d postgres
+```
+
+### 2. Install API dependencies
+
+```bash
+cd apps/api
+source .venv/bin/activate
+pip install -r requirements.txt
+```
+
+Set `DATABASE_URL` in the repo root `.env` (see `.env.example`):
+
+```
+DATABASE_URL=postgresql+psycopg://finsight:finsight_password@localhost:5432/finsight_db
+```
+
+See [apps/api/README.md](apps/api/README.md) for backend-specific setup.
+
+### 3. Create and apply migrations
+
+From `apps/api`:
+
+```bash
+# Generate a new migration after model changes
+alembic revision --autogenerate -m "describe your change"
+
+# Apply migrations
+alembic upgrade head
+```
+
+The initial migration creates: `users`, `uploaded_files`, `transactions`, `chat_messages`, `ai_runs`, and `evaluations`.
+
+### 4. Verify tables
+
+```bash
+docker compose exec postgres psql -U finsight -d finsight_db -c "\dt"
+```
 
 ## Stopping services
 

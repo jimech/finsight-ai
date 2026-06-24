@@ -1,58 +1,30 @@
-# FinSight AI — Project Context
+# FinSight AI Project Context
 
-## Overview
+FinSight AI is an AI-powered personal finance coach.
 
-FinSight AI is a production-style portfolio project: an AI-powered personal finance coach. Users will eventually get guidance on budgeting, spending, and financial goals through a modern web app backed by a FastAPI service.
+MVP:
+- User auth and onboarding
+- CSV transaction upload
+- Spending dashboard
+- Deterministic financial analytics
+- AI coach grounded in user transaction data
+- Monthly savings plan
+- AI evaluation and monitoring
 
-This document captures the intended architecture and scope for early development tickets.
+Stack:
+- Frontend: Next.js + TypeScript + Tailwind
+- Backend: FastAPI + Python
+- Database: PostgreSQL
+- Vector search: pgvector
+- Queue/cache: Redis
+- Auth: Clerk
+- AI: OpenAI Responses API
+- Observability: app logs first, Langfuse later
+- Deployment: Render, Railway, Fly.io, or similar
 
-## Monorepo Layout
-
-```
-finsight-ai/
-├── apps/
-│   ├── web/          # Next.js frontend (TypeScript, Tailwind)
-│   └── api/          # FastAPI backend (Python)
-├── docs/             # Project documentation
-├── docker-compose.yml
-└── .env.example
-```
-
-## Tech Stack
-
-| Layer        | Technology              | Status        |
-| ------------ | ----------------------- | ------------- |
-| Frontend     | Next.js, TypeScript, Tailwind | Initialized |
-| Backend      | FastAPI, Python         | Initialized   |
-| Database     | PostgreSQL              | Docker only   |
-| Cache/queue  | Redis                   | Docker only   |
-| Auth         | Clerk                   | Planned       |
-| AI           | OpenAI                  | Planned       |
-
-## Current Scope (Ticket 0.1)
-
-- Monorepo structure with runnable frontend and backend
-- Docker Compose for local Postgres and Redis
-- API health check at `GET /health`
-- Minimal marketing-style home page on the frontend
-
-## Out of Scope (for now)
-
-- Authentication (Clerk)
-- Database models and migrations
-- AI integrations (OpenAI)
-- File uploads
-- Dashboard or authenticated app pages
-
-## Local Ports
-
-| Service   | Port |
-| --------- | ---- |
-| Web       | 3000 |
-| API       | 8000 |
-| Postgres  | 5432 |
-| Redis     | 6379 |
-
-## Environment Variables
-
-See `.env.example` at the repository root. Copy it to `.env` and adjust values for local development.
+Rules:
+- The LLM must not calculate financial totals directly.
+- All user financial calculations must come from deterministic backend tools.
+- All database queries must be scoped by user_id.
+- AI responses about user spending must include citations.
+- No investment, tax, legal, or credit advice in MVP.

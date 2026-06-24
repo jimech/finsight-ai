@@ -6,8 +6,8 @@ services:
       - "5432:5432"
     environment:
       POSTGRES_USER: ${POSTGRES_USER:-finsight}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-finsight}
-      POSTGRES_DB: ${POSTGRES_DB:-finsight}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-finsight_password}
+      POSTGRES_DB: ${POSTGRES_DB:-finsight_db}
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
