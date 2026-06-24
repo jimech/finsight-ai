@@ -1,4 +1,5 @@
 from functools import lru_cache
+from typing import Optional
 
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
@@ -7,6 +8,8 @@ class Settings(BaseSettings):
     database_url: str = (
         "postgresql+psycopg://finsight:finsight_password@localhost:5432/finsight_db"
     )
+    clerk_secret_key: Optional[str] = None
+    clerk_jwks_url: Optional[str] = None
 
     model_config = SettingsConfigDict(
         env_file=(".env", "../../.env"),

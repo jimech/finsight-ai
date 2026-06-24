@@ -16,10 +16,12 @@ source .venv/bin/activate   # Windows: .venv\Scripts\activate
 pip install -r requirements.txt
 ```
 
-Copy the repo root `.env.example` to `.env` and set `DATABASE_URL`:
+Copy the repo root `.env.example` to `.env` and set:
 
 ```
 DATABASE_URL=postgresql+psycopg://finsight:finsight_password@localhost:5432/finsight_db
+CLERK_SECRET_KEY=sk_test_...
+CLERK_JWKS_URL=https://<your-clerk-domain>/.well-known/jwks.json
 ```
 
 Both `postgresql://` and `postgresql+psycopg://` URLs are supported; the latter is recommended with psycopg3.
@@ -70,13 +72,29 @@ curl http://localhost:8000/health
 
 API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
+## Authentication
+
+Protected routes use `get_current_user` from `app/core/auth.py`. It reads `Authorization: Bearer <token>`, verifies the Clerk JWT against `CLERK_JWKS_URL`, and returns an `AuthenticatedUser` with the Clerk `sub` claim.
+
+```bash
+# Public
+curl http://localhost:8000/health
+
+# Protected — returns 401 without a valid Clerk session token
+curl -i http://localhost:8000/auth/me
+curl -H "Authorization: Bearer <token>" http://localhost:8000/auth/me
+```
+
 ## Project layout
 
 ```
 apps/api/
 ├── alembic/              # Alembic migrations
 ├── app/
-│   ├── core/config.py    # Settings (DATABASE_URL)
+│   ├── core/
+│   │   ├── config.py     # Settings (DATABASE_URL, Clerk)
+│   │   └── auth.py       # JWT auth dependency
+│   ├── routers/auth.py   # /auth/me
 │   ├── db/               # SQLAlchemy base and session
 │   ├── models/           # ORM models
 │   └── main.py           # FastAPI app

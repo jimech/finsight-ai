@@ -88,9 +88,63 @@ Open [http://localhost:3000](http://localhost:3000). You should see the FinSight
 
 ## Development notes
 
-- **Auth** (Clerk) and **AI** (OpenAI) are planned but not implemented yet.
-- Dashboard pages are not included yet.
+- **AI** (OpenAI) is planned but not implemented yet.
+- Dashboard is a protected placeholder; full features come in later tickets.
+- Clerk users are **not** synced to the local `users` table yet — that is the next ticket.
 - See [docs/project-context.md](docs/project-context.md) for architecture and scope details.
+
+## Authentication (Clerk)
+
+FinSight uses [Clerk](https://clerk.com/) for auth. The frontend protects `/dashboard` via `proxy.ts`; the API verifies Clerk JWTs for protected routes like `GET /auth/me`.
+
+### 1. Create a Clerk application
+
+1. Sign up at [clerk.com](https://clerk.com/) and create an application.
+2. From the Clerk Dashboard, copy:
+   - **Publishable key** → `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`
+   - **Secret key** → `CLERK_SECRET_KEY` (server only — never expose to the browser)
+   - **JWKS URL** (API Keys → Advanced) → `CLERK_JWKS_URL`
+
+### 2. Configure environment variables
+
+**Repo root `.env`** (used by the API):
+
+```bash
+CLERK_SECRET_KEY=sk_test_...
+CLERK_JWKS_URL=https://<your-clerk-domain>/.well-known/jwks.json
+```
+
+**`apps/web/.env.local`** (used by Next.js — copy from `apps/web/.env.example`):
+
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_...
+CLERK_SECRET_KEY=sk_test_...
+NEXT_PUBLIC_CLERK_SIGN_IN_URL=/sign-in
+NEXT_PUBLIC_CLERK_SIGN_UP_URL=/sign-up
+```
+
+> `CLERK_SECRET_KEY` is required in `apps/web/.env.local` for server-side Clerk components. Only `NEXT_PUBLIC_*` keys are sent to the browser.
+
+### 3. Verify auth
+
+| Route | Auth required | Expected |
+|-------|---------------|----------|
+| `GET /` | No | Public landing page |
+| `GET /dashboard` | Yes | Redirects to sign-in when signed out |
+| `GET /health` | No | `{"status":"ok","service":"finsight-api"}` |
+| `GET /auth/me` | Yes (Bearer token) | 401 without token; user info with valid Clerk JWT |
+
+Test the API (no token → 401):
+
+```bash
+curl -i http://localhost:8000/auth/me
+```
+
+With a Clerk session token from the browser (signed in → DevTools → Network → copy `Authorization` header or use Clerk's `getToken()`), call:
+
+```bash
+curl -H "Authorization: Bearer <clerk_session_token>" http://localhost:8000/auth/me
+```
 
 ## Database setup
 
