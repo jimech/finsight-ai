@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { DashboardNav } from "@/components/dashboard-nav";
 import { EmptyState } from "@/components/empty-state";
+import { PortfolioNotice } from "@/components/portfolio-notice";
 import {
   type RecurringExpensesResponse,
   type SavingsOpportunitiesResponse,
@@ -14,20 +15,6 @@ import {
   getProfile,
   isProfileComplete,
 } from "@/lib/api";
-
-const PRIORITY_LABELS: Record<string, string> = {
-  save_money: "Save money",
-  reduce_spending: "Reduce spending",
-  pay_down_debt: "Pay down debt",
-  build_emergency_fund: "Build emergency fund",
-  understand_spending: "Understand spending",
-};
-
-const TONE_LABELS: Record<string, string> = {
-  supportive: "Supportive",
-  direct: "Direct",
-  playful: "Playful",
-};
 
 function formatCurrency(value: number | null): string {
   if (value === null) return "—";
@@ -126,6 +113,10 @@ export default async function DashboardPage() {
 
         <div className="mt-8">
           <DashboardNav />
+        </div>
+
+        <div className="mt-8">
+          <PortfolioNotice compact />
         </div>
 
         {profileError && (

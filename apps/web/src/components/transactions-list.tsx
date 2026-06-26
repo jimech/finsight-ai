@@ -3,6 +3,7 @@
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
+import { EmptyState } from "@/components/empty-state";
 import { type Transaction, getTransactions } from "@/lib/api";
 
 function formatCurrency(value: number): string {
@@ -69,9 +70,18 @@ export function TransactionsList() {
 
   if (transactions.length === 0) {
     return (
-      <p className="text-sm text-zinc-600 dark:text-zinc-400">
-        No transactions yet. Upload a CSV to get started.
-      </p>
+      <EmptyState
+        title="No transactions yet"
+        description="Upload a CSV with your spending history to populate this list and unlock dashboard analytics."
+        action={{
+          href: "/transactions/upload",
+          label: "Upload transactions",
+        }}
+        secondaryAction={{
+          href: "/dashboard",
+          label: "Back to dashboard",
+        }}
+      />
     );
   }
 

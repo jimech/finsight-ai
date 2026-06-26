@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 
+import { EmptyState } from "@/components/empty-state";
 import { type MonthlyPlan, getMonthlyPlan } from "@/lib/api";
 
 function formatCurrency(value: number): string {
@@ -67,26 +67,18 @@ export function MonthlyPlanView() {
   return (
     <div className="space-y-8">
       {limitedData && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
-          <p className="text-sm text-amber-900 dark:text-amber-100">
-            Limited transaction data available. Upload transactions and complete
-            your profile for a more specific plan.
-          </p>
-          <div className="mt-3 flex flex-wrap gap-3">
-            <Link
-              href="/transactions/upload"
-              className="text-sm font-medium text-amber-900 underline dark:text-amber-100"
-            >
-              Upload transactions
-            </Link>
-            <Link
-              href="/onboarding"
-              className="text-sm font-medium text-amber-900 underline dark:text-amber-100"
-            >
-              Complete profile
-            </Link>
-          </div>
-        </div>
+        <EmptyState
+          title="Limited plan data"
+          description="Upload more transactions and complete your profile so FinSight can recommend category cuts and savings targets from your actual spending."
+          action={{
+            href: "/transactions/upload",
+            label: "Upload transactions",
+          }}
+          secondaryAction={{
+            href: "/onboarding",
+            label: "Complete profile",
+          }}
+        />
       )}
 
       <section className="rounded-lg border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-800 dark:bg-zinc-950">

@@ -4,32 +4,49 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 
 const NAV_ITEMS = [
-  { href: "/dashboard", label: "Dashboard", description: "Overview & insights" },
+  {
+    href: "/onboarding",
+    label: "Complete profile",
+    description: "Goals & coaching tone",
+  },
   {
     href: "/transactions/upload",
-    label: "Upload",
+    label: "Upload transactions",
     description: "Import CSV data",
   },
   {
     href: "/transactions",
-    label: "Transactions",
-    description: "View imports",
+    label: "View transactions",
+    description: "Browse imports",
   },
-  { href: "/coach", label: "Coach", description: "Ask FinSight AI" },
-  { href: "/plan", label: "Monthly plan", description: "Action plan" },
+  {
+    href: "/transactions/search",
+    label: "Search transactions",
+    description: "Vector retrieval",
+  },
+  {
+    href: "/coach",
+    label: "Ask FinSight Coach",
+    description: "Grounded AI chat",
+  },
+  {
+    href: "/plan",
+    label: "Create monthly plan",
+    description: "Savings action plan",
+  },
   {
     href: "/admin/ai-runs",
-    label: "AI runs",
-    description: "Review outputs",
+    label: "Review AI runs",
+    description: "Logs & evaluations",
   },
 ] as const;
 
 function isActive(pathname: string, href: string) {
-  if (href === "/dashboard") {
-    return pathname === href;
+  if (href === "/transactions") {
+    return pathname === "/transactions";
   }
 
-  return pathname.startsWith(href);
+  return pathname === href || pathname.startsWith(`${href}/`);
 }
 
 export function DashboardNav() {
@@ -38,7 +55,7 @@ export function DashboardNav() {
   return (
     <nav
       aria-label="App navigation"
-      className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3"
+      className="grid gap-3 sm:grid-cols-2 xl:grid-cols-3"
     >
       {NAV_ITEMS.map((item) => {
         const active = isActive(pathname, item.href);

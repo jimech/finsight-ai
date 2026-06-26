@@ -65,7 +65,7 @@ export function TransactionUploadForm() {
         />
         <p className="mt-2 text-sm text-zinc-500 dark:text-zinc-400">
           Required columns: date, description, amount. Optional: merchant,
-          category.
+          category. See the demo format guide below for an example.
         </p>
       </div>
 

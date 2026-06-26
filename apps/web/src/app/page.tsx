@@ -3,6 +3,7 @@ import Link from "next/link";
 
 import { AuthHeader } from "@/components/auth-header";
 import { DemoCsvGuide } from "@/components/demo-csv-guide";
+import { PortfolioNotice } from "@/components/portfolio-notice";
 
 const STEPS = [
   {
@@ -109,7 +110,8 @@ export default function Home() {
         </section>
 
         <section className="border-t border-zinc-200 bg-zinc-50 px-6 py-16 dark:border-zinc-800 dark:bg-zinc-950">
-          <div className="mx-auto max-w-3xl">
+          <div className="mx-auto max-w-3xl space-y-8">
+            <PortfolioNotice />
             <DemoCsvGuide />
           </div>
         </section>

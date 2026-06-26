@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import Link from "next/link";
 import { FormEvent, useEffect, useState } from "react";
 
+import { EmptyState } from "@/components/empty-state";
 import {
   type ChatHistoryMessage,
   type ChatCitation,
@@ -179,28 +179,33 @@ export function CoachChat() {
       )}
 
       {hasTransactions === false && (
-        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
-          <p className="text-sm text-amber-900 dark:text-amber-100">
-            Upload transactions first so FinSight Coach can answer with grounded
-            spending data.
-          </p>
-          <Link
-            href="/transactions/upload"
-            className="mt-3 inline-block text-sm font-medium text-amber-900 underline dark:text-amber-100"
-          >
-            Upload transactions CSV
-          </Link>
-        </div>
+        <EmptyState
+          title="Upload transactions first"
+          description="FinSight Coach answers are grounded in your deterministic analytics and retrieved transaction snippets. Import a CSV to get started."
+          action={{
+            href: "/transactions/upload",
+            label: "Upload transactions",
+          }}
+          secondaryAction={{
+            href: "/dashboard",
+            label: "Back to dashboard",
+          }}
+        />
       )}
 
       <div className="rounded-lg border border-zinc-200 bg-white dark:border-zinc-800 dark:bg-zinc-900">
         <div className="max-h-[28rem] space-y-4 overflow-y-auto p-4">
           {messages.length === 0 ? (
-            <p className="text-sm text-zinc-600 dark:text-zinc-400">
-              Ask FinSight Coach about saving money, recurring expenses, or
-              where to cut back. Answers use your deterministic analytics, not
-              invented totals.
-            </p>
+            <div className="rounded-lg border border-dashed border-zinc-300 bg-zinc-50 p-6 text-center dark:border-zinc-700 dark:bg-zinc-950">
+              <p className="text-sm font-medium text-zinc-900 dark:text-zinc-50">
+                Start a conversation
+              </p>
+              <p className="mx-auto mt-2 max-w-md text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+                Try asking about saving money, recurring expenses, or where to
+                cut back. Each answer cites deterministic tools and relevant
+                transactions—not invented totals.
+              </p>
+            </div>
           ) : (
             messages.map((message) => (
               <div

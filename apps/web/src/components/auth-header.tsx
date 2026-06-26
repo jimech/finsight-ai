@@ -10,8 +10,10 @@ const SIGNED_IN_LINKS = [
   { href: "/dashboard", label: "Dashboard" },
   { href: "/transactions/upload", label: "Upload" },
   { href: "/transactions", label: "Transactions" },
+  { href: "/transactions/search", label: "Search" },
   { href: "/coach", label: "Coach" },
   { href: "/plan", label: "Plan" },
+  { href: "/admin/ai-runs", label: "AI runs" },
 ] as const;
 
 export function AuthHeader() {

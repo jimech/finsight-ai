@@ -3,6 +3,7 @@
 import { useAuth } from "@clerk/nextjs";
 import { useEffect, useState } from "react";
 
+import { EmptyState } from "@/components/empty-state";
 import {
   type AIRunItem,
   type EvaluationSubmit,
@@ -235,12 +236,12 @@ export function AiRunsPanel() {
 
   if (runs.length === 0) {
     return (
-      <div className="rounded-lg border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-800 dark:bg-zinc-950">
-        <p className="text-sm text-zinc-600 dark:text-zinc-400">
-          No AI runs yet. Use the coach chat or monthly plan to generate runs you
-          can review here.
-        </p>
-      </div>
+      <EmptyState
+        title="No AI runs yet"
+        description="Chat with FinSight Coach or generate a monthly plan to create logged AI runs you can review and evaluate here."
+        action={{ href: "/coach", label: "Ask FinSight Coach" }}
+        secondaryAction={{ href: "/plan", label: "Create monthly plan" }}
+      />
     );
   }
 

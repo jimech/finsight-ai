@@ -1,9 +1,9 @@
 "use client";
 
 import { useAuth } from "@clerk/nextjs";
-import Link from "next/link";
 import { FormEvent, useState } from "react";
 
+import { EmptyState } from "@/components/empty-state";
 import {
   type TransactionSearchResult,
   generateTransactionEmbeddings,
@@ -28,6 +28,7 @@ export function TransactionSearchPanel() {
   const [generating, setGenerating] = useState(false);
   const [generateMessage, setGenerateMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [hasSearched, setHasSearched] = useState(false);
 
   async function handleSearch(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
@@ -51,11 +52,7 @@ export function TransactionSearchPanel() {
       });
       setResults(response.results);
       setEmbeddingsEnabled(response.embeddings_enabled);
-      if (response.results.length === 0) {
-        setError(
-          "No matching transaction snippets found. Generate embeddings first.",
-        );
-      }
+      setHasSearched(true);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Search failed.");
     } finally {
@@ -90,6 +87,21 @@ export function TransactionSearchPanel() {
 
   return (
     <div className="space-y-6">
+      {!hasSearched && !generateMessage && (
+        <EmptyState
+          title="Set up transaction search"
+          description="Upload a CSV, generate embeddings for your transactions, then search by natural language. Retrieved snippets power AI coach citations."
+          action={{
+            href: "/transactions/upload",
+            label: "Upload transactions",
+          }}
+          secondaryAction={{
+            href: "/transactions",
+            label: "View transactions",
+          }}
+        />
+      )}
+
       {embeddingsEnabled === false && (
         <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 dark:border-amber-900 dark:bg-amber-950">
           <p className="text-sm text-amber-900 dark:text-amber-100">
@@ -155,8 +167,11 @@ export function TransactionSearchPanel() {
         </p>
       )}
 
-      {results.length > 0 && (
+      {results.length > 0 ? (
         <div className="space-y-4">
+          <p className="text-sm text-zinc-600 dark:text-zinc-400">
+            {results.length} matching snippet{results.length === 1 ? "" : "s"}
+          </p>
           {results.map((result) => (
             <article
               key={result.transaction_id}
@@ -181,7 +196,20 @@ export function TransactionSearchPanel() {
             </article>
           ))}
         </div>
-      )}
+      ) : hasSearched ? (
+        <EmptyState
+          title="No matching results"
+          description="Try a different query or generate embeddings for your transactions first. Search works best after you upload CSV data."
+          action={{
+            href: "/transactions/upload",
+            label: "Upload transactions",
+          }}
+          secondaryAction={{
+            href: "/transactions",
+            label: "View transactions",
+          }}
+        />
+      ) : null}
     </div>
   );
 }
