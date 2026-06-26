@@ -9,6 +9,8 @@ finsight-ai/
 ├── apps/
 │   ├── web/          # Next.js + TypeScript + Tailwind
 │   └── api/          # FastAPI (Python)
+├── demo-data/        # Sample CSV for portfolio demos
+│   └── sample-transactions.csv
 ├── docs/
 │   └── project-context.md
 ├── docker-compose.yml
@@ -86,10 +88,44 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000). You should see the FinSight AI home page.
 
+## Demo data
+
+FinSight includes a fake transaction dataset for portfolio reviewers and local testing.
+
+**File:** [`demo-data/sample-transactions.csv`](demo-data/sample-transactions.csv)
+
+- **100 transactions** across **3 months** (Jan–Mar 2026)
+- Columns: `date`, `description`, `merchant`, `amount`, `category`
+- All data is fictional — no real bank accounts, card numbers, or personal information
+- Includes recurring charges (rent, utilities, Netflix, Spotify, gym)
+- Includes discretionary spending patterns (coffee, dining, shopping) that surface savings opportunities in the dashboard
+
+### How to use the sample CSV
+
+1. Sign in at [http://localhost:3000](http://localhost:3000) (or create an account).
+2. Go to **Upload transactions** (`/transactions/upload`).
+3. Select `demo-data/sample-transactions.csv` from this repository and upload it.
+4. Open the **Dashboard** to see spending summary, category breakdown, recurring expenses, and savings opportunities.
+
+You can also copy the CSV snippet from the landing page or upload page if you prefer.
+
+### Recommended demo flow
+
+1. **Sign up** — create a Clerk account at `/sign-up`
+2. **Complete onboarding** — add income, savings goal, and coaching preferences at `/onboarding`
+3. **Upload sample CSV** — import `demo-data/sample-transactions.csv`
+4. **View dashboard** — review income, spending, categories, recurring expenses, and savings opportunities
+5. **Generate embeddings** — on `/transactions/search`, click **Generate embeddings**
+6. **Search transactions** — try queries like `coffee spending` or `subscription charges`
+7. **Ask coach** — open `/coach` and ask about saving money or recurring expenses
+8. **Create monthly plan** — open `/plan` for a deterministic savings action plan
+9. **Review AI runs** — open `/admin/ai-runs` to inspect outputs and record evaluations
+
+> **Portfolio demo notice:** FinSight AI is a portfolio project for demonstration purposes. It does not provide financial, tax, investment, credit, or legal advice. Spending totals and plans come from deterministic backend analytics; AI coach answers cite those tools and retrieved transaction snippets.
+
 ## Development notes
 
-- **AI** (OpenAI) is planned but not implemented yet.
-- Dashboard is a protected placeholder; full features come in later tickets.
+- **AI coach** and **monthly plan** use OpenAI when `AI_ENABLED=true` and `OPENAI_API_KEY` is set; deterministic fallbacks work without AI.
 - Clerk users are synced to the local `users` table on first `GET /auth/me` call.
 - See [docs/project-context.md](docs/project-context.md) for architecture and scope details.
 
