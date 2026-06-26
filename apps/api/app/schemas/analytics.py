@@ -1,5 +1,5 @@
 from datetime import date
-from typing import List, Optional
+from typing import List, Literal, Optional
 from uuid import UUID
 
 from pydantic import BaseModel
@@ -27,6 +27,24 @@ class LargestExpenseItem(BaseModel):
     category: str
 
 
+class RecurringExpenseItem(BaseModel):
+    merchant_or_description: str
+    average_amount: float
+    transaction_count: int
+    first_seen: date
+    last_seen: date
+    confidence: Literal["high", "medium"]
+    category: str
+
+
+class SavingsOpportunityItem(BaseModel):
+    category: str
+    current_spending: float
+    suggested_reduction_percent: float
+    potential_monthly_savings: float
+    reason: str
+
+
 class SpendingSummaryResponse(BaseModel):
     start_date: Optional[date] = None
     end_date: Optional[date] = None
@@ -39,9 +57,24 @@ class SpendingSummaryResponse(BaseModel):
     category_breakdown: List[CategoryBreakdownItem]
     top_merchants: List[TopMerchantItem]
     uncategorized_count: int
+    recurring_expense_count: int = 0
+    estimated_recurring_total: float = 0.0
+    top_savings_opportunity: Optional[SavingsOpportunityItem] = None
 
 
 class CategoryBreakdownResponse(BaseModel):
     start_date: Optional[date] = None
     end_date: Optional[date] = None
     items: List[CategoryBreakdownItem]
+
+
+class RecurringExpensesResponse(BaseModel):
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    items: List[RecurringExpenseItem]
+
+
+class SavingsOpportunitiesResponse(BaseModel):
+    start_date: Optional[date] = None
+    end_date: Optional[date] = None
+    items: List[SavingsOpportunityItem]
