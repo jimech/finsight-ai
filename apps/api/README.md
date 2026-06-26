@@ -86,6 +86,24 @@ curl -i http://localhost:8000/auth/me
 curl -H "Authorization: Bearer <token>" http://localhost:8000/auth/me
 ```
 
+## Transaction CSV uploads
+
+```bash
+# Upload a CSV (multipart/form-data)
+curl -X POST http://localhost:8000/uploads/transactions \
+  -H "Authorization: Bearer <token>" \
+  -F "file=@transactions.csv"
+
+# List current user's uploads
+curl -H "Authorization: Bearer <token>" http://localhost:8000/uploads
+```
+
+Run upload tests:
+
+```bash
+pytest tests/test_uploads.py
+```
+
 ## Project layout
 
 ```
@@ -95,8 +113,14 @@ apps/api/
 │   ├── core/
 │   │   ├── config.py     # Settings (DATABASE_URL, Clerk)
 │   │   └── auth.py       # JWT auth + get_current_db_user
-│   ├── services/users.py # get_or_create_user_from_auth
-│   ├── routers/auth.py   # /auth/me
+│   ├── services/
+│   │   ├── users.py      # get_or_create_user_from_auth
+│   │   ├── profile.py
+│   │   └── uploads.py    # CSV parse + import
+│   ├── routers/
+│   │   ├── auth.py
+│   │   ├── profile.py
+│   │   └── uploads.py
 │   ├── db/               # SQLAlchemy base and session
 │   ├── models/           # ORM models
 │   └── main.py           # FastAPI app
