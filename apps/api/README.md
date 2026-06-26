@@ -74,7 +74,7 @@ API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
 
 ## Authentication
 
-Protected routes use `get_current_user` from `app/core/auth.py`. It reads `Authorization: Bearer <token>`, verifies the Clerk JWT against `CLERK_JWKS_URL`, and returns an `AuthenticatedUser` with the Clerk `sub` claim.
+Protected routes use `get_current_user` or `get_current_db_user` from `app/core/auth.py`. `get_current_db_user` verifies the Clerk JWT and ensures a matching row exists in `users` (synced via `get_or_create_user_from_auth`).
 
 ```bash
 # Public
@@ -82,6 +82,7 @@ curl http://localhost:8000/health
 
 # Protected — returns 401 without a valid Clerk session token
 curl -i http://localhost:8000/auth/me
+# Protected — creates local user on first call, returns user_id + email
 curl -H "Authorization: Bearer <token>" http://localhost:8000/auth/me
 ```
 
@@ -93,7 +94,8 @@ apps/api/
 ├── app/
 │   ├── core/
 │   │   ├── config.py     # Settings (DATABASE_URL, Clerk)
-│   │   └── auth.py       # JWT auth dependency
+│   │   └── auth.py       # JWT auth + get_current_db_user
+│   ├── services/users.py # get_or_create_user_from_auth
 │   ├── routers/auth.py   # /auth/me
 │   ├── db/               # SQLAlchemy base and session
 │   ├── models/           # ORM models

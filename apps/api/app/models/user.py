@@ -1,5 +1,5 @@
 import uuid
-from typing import Optional
+from typing import Any, Optional
 
 from sqlalchemy import Numeric, String
 from sqlalchemy.orm import Mapped, mapped_column
@@ -11,6 +11,9 @@ class User(Base, TimestampMixin):
     __tablename__ = "users"
 
     id: Mapped[uuid.UUID] = uuid_primary_key()
+    clerk_user_id: Mapped[str] = mapped_column(
+        String(255), unique=True, index=True, nullable=False
+    )
     email: Mapped[str] = mapped_column(String(255), unique=True, nullable=False)
     name: Mapped[Optional[str]] = mapped_column(String(255), nullable=True)
     monthly_income: Mapped[Optional[float]] = mapped_column(Numeric(12, 2), nullable=True)
