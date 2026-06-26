@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-from app.routers import analytics, auth, profile, transactions, uploads
+from app.routers import analytics, auth, chat, profile, transactions, uploads
 
 app = FastAPI(title="FinSight API", version="0.1.0")
 
@@ -21,6 +21,7 @@ app.include_router(profile.router)
 app.include_router(uploads.router)
 app.include_router(analytics.router)
 app.include_router(transactions.router)
+app.include_router(chat.router)
 
 
 @app.get("/health")

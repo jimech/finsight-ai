@@ -10,6 +10,9 @@ class Settings(BaseSettings):
     )
     clerk_secret_key: Optional[str] = None
     clerk_jwks_url: Optional[str] = None
+    openai_api_key: Optional[str] = None
+    openai_model: str = "gpt-4.1-mini"
+    ai_enabled: bool = False
 
     model_config = SettingsConfigDict(
         env_file=(".env", "../../.env"),
