@@ -2,6 +2,8 @@ import { UserButton } from "@clerk/nextjs";
 import { auth } from "@clerk/nextjs/server";
 import Link from "next/link";
 
+import { DashboardNav } from "@/components/dashboard-nav";
+import { EmptyState } from "@/components/empty-state";
 import {
   type RecurringExpensesResponse,
   type SavingsOpportunitiesResponse,
@@ -104,18 +106,26 @@ export default async function DashboardPage() {
   const hasTransactions = summary ? summary.transaction_count > 0 : false;
 
   return (
-    <main className="flex min-h-full flex-1 flex-col px-6 py-16">
-      <div className="mx-auto w-full max-w-4xl">
-        <div className="flex items-center justify-between">
+    <main className="flex min-h-full flex-1 flex-col px-6 py-10 sm:py-12">
+      <div className="mx-auto w-full max-w-5xl">
+        <div className="flex items-center justify-between gap-4">
           <div>
-            <h1 className="text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
+            <p className="text-sm font-medium uppercase tracking-widest text-zinc-500 dark:text-zinc-400">
+              Command center
+            </p>
+            <h1 className="mt-2 text-3xl font-semibold tracking-tight text-zinc-900 dark:text-zinc-50">
               Dashboard
             </h1>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-400">
-              Your personal finance overview.
+            <p className="mt-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+              Upload data, review insights, ask your coach, and build your
+              monthly plan.
             </p>
           </div>
           <UserButton />
+        </div>
+
+        <div className="mt-8">
+          <DashboardNav />
         </div>
 
         {profileError && (
@@ -143,70 +153,31 @@ export default async function DashboardPage() {
         )}
 
         {!complete && !profileError && (
-          <div className="mt-8 rounded-lg border border-amber-200 bg-amber-50 p-6 dark:border-amber-900 dark:bg-amber-950">
-            <h2 className="text-lg font-medium text-amber-900 dark:text-amber-100">
-              Complete your profile
-            </h2>
-            <p className="mt-2 text-sm text-amber-800 dark:text-amber-200">
-              Add your financial context so FinSight can personalize your
-              coaching experience.
-            </p>
-            <Link
-              href="/onboarding"
-              className="mt-4 inline-block rounded-md bg-amber-900 px-4 py-2 text-sm font-medium text-white hover:bg-amber-800 dark:bg-amber-100 dark:text-amber-900 dark:hover:bg-amber-200"
-            >
-              Go to onboarding
-            </Link>
+          <div className="mt-8">
+            <EmptyState
+              title="Complete your profile"
+              description="Add your financial context so FinSight can personalize coaching, plans, and savings recommendations."
+              action={{ href: "/onboarding", label: "Go to onboarding" }}
+            />
           </div>
         )}
 
-        <div className="mt-8 rounded-lg border border-emerald-200 bg-emerald-50 p-6 dark:border-emerald-900 dark:bg-emerald-950">
-          <h2 className="text-lg font-medium text-emerald-900 dark:text-emerald-100">
-            Ask FinSight Coach
-          </h2>
-          <p className="mt-2 text-sm text-emerald-800 dark:text-emerald-200">
-            Get grounded answers about saving money, recurring expenses, and
-            spending patterns using your deterministic analytics.
-          </p>
-          <Link
-            href="/coach"
-            className="mt-4 inline-block rounded-md bg-emerald-900 px-4 py-2 text-sm font-medium text-white hover:bg-emerald-800 dark:bg-emerald-100 dark:text-emerald-900 dark:hover:bg-emerald-200"
-          >
-            Open coach chat
-          </Link>
-        </div>
-
-        <div className="mt-8 rounded-lg border border-blue-200 bg-blue-50 p-6 dark:border-blue-900 dark:bg-blue-950">
-          <h2 className="text-lg font-medium text-blue-900 dark:text-blue-100">
-            Create monthly plan
-          </h2>
-          <p className="mt-2 text-sm text-blue-800 dark:text-blue-200">
-            Generate a structured monthly action plan with savings targets,
-            recommended cuts, and weekly steps from your data.
-          </p>
-          <Link
-            href="/plan"
-            className="mt-4 inline-block rounded-md bg-blue-900 px-4 py-2 text-sm font-medium text-white hover:bg-blue-800 dark:bg-blue-100 dark:text-blue-900 dark:hover:bg-blue-200"
-          >
-            View monthly plan
-          </Link>
-        </div>
-
-        <div className="mt-8 rounded-lg border border-violet-200 bg-violet-50 p-6 dark:border-violet-900 dark:bg-violet-950">
-          <h2 className="text-lg font-medium text-violet-900 dark:text-violet-100">
-            Review AI runs
-          </h2>
-          <p className="mt-2 text-sm text-violet-800 dark:text-violet-200">
-            Inspect your coach and plan AI runs, then record citation,
-            groundedness, and safety evaluations.
-          </p>
-          <Link
-            href="/admin/ai-runs"
-            className="mt-4 inline-block rounded-md bg-violet-900 px-4 py-2 text-sm font-medium text-white hover:bg-violet-800 dark:bg-violet-100 dark:text-violet-900 dark:hover:bg-violet-200"
-          >
-            Open my AI runs
-          </Link>
-        </div>
+        {summary && !hasTransactions && (
+          <div className="mt-8">
+            <EmptyState
+              title="No transactions yet"
+              description="Upload a CSV with your spending history to unlock dashboard analytics, coach answers, and monthly plans."
+              action={{
+                href: "/transactions/upload",
+                label: "Upload transactions",
+              }}
+              secondaryAction={{
+                href: "/transactions",
+                label: "View transactions",
+              }}
+            />
+          </div>
+        )}
 
         {complete && profile && (
           <div className="mt-8 rounded-lg border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-800 dark:bg-zinc-950">
@@ -482,44 +453,36 @@ export default async function DashboardPage() {
           </div>
         )}
 
-        <div className="mt-8 rounded-lg border border-zinc-200 bg-zinc-50 p-6 dark:border-zinc-800 dark:bg-zinc-950">
-          <h2 className="text-lg font-medium text-zinc-900 dark:text-zinc-50">
-            Transactions
-          </h2>
-          {summary && !hasTransactions ? (
+        {hasTransactions && (
+          <div className="mt-8 rounded-xl border border-zinc-200 bg-white p-6 dark:border-zinc-800 dark:bg-zinc-900">
+            <h2 className="text-lg font-semibold text-zinc-900 dark:text-zinc-50">
+              Quick actions
+            </h2>
             <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-              No transactions yet. Upload a CSV to see your spending summary.
+              Continue exploring your imported data.
             </p>
-          ) : (
-            <p className="mt-2 text-sm text-zinc-600 dark:text-zinc-400">
-              Upload a CSV or view your imported transactions.
-            </p>
-          )}
-          <div className="mt-4 flex flex-wrap gap-3">
-            {hasTransactions && (
+            <div className="mt-4 flex flex-wrap gap-3">
               <Link
                 href="/transactions"
-                className="inline-block rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-900"
+                className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-950"
               >
                 View transactions
               </Link>
-            )}
-            {hasTransactions && (
               <Link
                 href="/transactions/search"
-                className="inline-block rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-900"
+                className="rounded-md border border-zinc-300 px-4 py-2 text-sm font-medium text-zinc-900 hover:bg-zinc-100 dark:border-zinc-700 dark:text-zinc-100 dark:hover:bg-zinc-950"
               >
                 Search transactions
               </Link>
-            )}
-            <Link
-              href="/transactions/upload"
-              className="inline-block rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
-            >
-              Upload transactions
-            </Link>
+              <Link
+                href="/transactions/upload"
+                className="rounded-md bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-700 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-300"
+              >
+                Upload more data
+              </Link>
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </main>
   );
