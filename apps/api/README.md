@@ -20,8 +20,14 @@ Copy the repo root `.env.example` to `.env` and set:
 
 ```
 DATABASE_URL=postgresql+psycopg://finsight:finsight_password@localhost:5432/finsight_db
+FRONTEND_URL=http://localhost:3000
 CLERK_SECRET_KEY=sk_test_...
 CLERK_JWKS_URL=https://<your-clerk-domain>/.well-known/jwks.json
+OPENAI_API_KEY=
+OPENAI_MODEL=gpt-4.1-mini
+AI_ENABLED=false
+EMBEDDING_MODEL=text-embedding-3-small
+EMBEDDINGS_ENABLED=false
 ```
 
 Both `postgresql://` and `postgresql+psycopg://` URLs are supported; the latter is recommended with psycopg3.
@@ -71,6 +77,24 @@ curl http://localhost:8000/health
 ```
 
 API docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+## Production deployment
+
+See [docs/deployment.md](../../docs/deployment.md) for Vercel + Render setup.
+
+**Start command (Render):**
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+**Migrations (production database):**
+
+```bash
+alembic upgrade head
+```
+
+**CORS:** set `FRONTEND_URL` to your deployed Next.js origin (e.g. `https://your-app.vercel.app`). Local origins `http://localhost:3000` and `http://localhost:3001` are always allowed.
 
 ## Authentication
 

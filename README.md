@@ -12,7 +12,8 @@ finsight-ai/
 ├── demo-data/        # Sample CSV for portfolio demos
 │   └── sample-transactions.csv
 ├── docs/
-│   └── project-context.md
+│   ├── project-context.md
+│   └── deployment.md
 ├── docker-compose.yml
 └── .env.example
 ```
@@ -122,6 +123,57 @@ You can also copy the CSV snippet from the landing page or upload page if you pr
 9. **Review AI runs** — open `/admin/ai-runs` to inspect outputs and record evaluations
 
 > **Portfolio demo notice:** FinSight AI is a portfolio project for demonstration purposes. It does not provide financial, tax, investment, credit, or legal advice. Spending totals and plans come from deterministic backend analytics; AI coach answers cite those tools and retrieved transaction snippets.
+
+## Production deployment
+
+FinSight is designed for **Vercel** (frontend) and **Render** (or similar) for the FastAPI backend.
+
+See **[docs/deployment.md](docs/deployment.md)** for:
+
+- Vercel and Render setup steps
+- PostgreSQL / pgvector provider notes
+- Required environment variables (backend and frontend)
+- Clerk URL and callback configuration
+- OpenAI configuration
+- Alembic migration commands
+- Production demo flow
+
+### Pre-deploy verification
+
+**Backend:**
+
+```bash
+cd apps/api
+pip install -r requirements.txt
+pytest
+```
+
+**Frontend:**
+
+```bash
+cd apps/web
+npm run build
+```
+
+**Health check** (local or production API URL):
+
+```bash
+curl https://your-api.onrender.com/health
+# {"status":"ok","service":"finsight-api"}
+```
+
+Production start command for Render:
+
+```bash
+uvicorn app.main:app --host 0.0.0.0 --port $PORT
+```
+
+Apply database migrations before or after first deploy:
+
+```bash
+cd apps/api
+alembic upgrade head
+```
 
 ## Development notes
 
