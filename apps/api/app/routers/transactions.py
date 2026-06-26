@@ -6,13 +6,21 @@ from fastapi import APIRouter, Depends, HTTPException, Query, status
 from sqlalchemy.orm import Session
 
 from app.core.auth import get_current_user
+from app.core.config import settings
 from app.core.types import AuthenticatedUser
 from app.db.session import get_db
+from app.schemas.retrieval import (
+    EmbeddingGenerateResponse,
+    TransactionSearchRequest,
+    TransactionSearchResponse,
+)
 from app.schemas.transaction import (
     TransactionItem,
     TransactionListResponse,
     TransactionUpdate,
 )
+from app.services.embeddings import generate_missing_embeddings_for_user
+from app.services.retrieval import search_user_transactions
 from app.services.transactions import (
     TransactionListParams,
     get_user_transaction,
@@ -69,3 +77,28 @@ def patch_transaction(
         )
 
     return update_user_transaction(db, transaction, data)
+
+
+@router.post("/embeddings/generate", response_model=EmbeddingGenerateResponse)
+def generate_transaction_embeddings(
+    db: Session = Depends(get_db),
+    authenticated_user: AuthenticatedUser = Depends(get_current_user),
+):
+    user = get_or_create_user_from_auth(db, authenticated_user)
+    generated, skipped = generate_missing_embeddings_for_user(db, user.id)
+    return EmbeddingGenerateResponse(generated=generated, skipped=skipped)
+
+
+@router.post("/search", response_model=TransactionSearchResponse)
+def search_transactions(
+    body: TransactionSearchRequest,
+    db: Session = Depends(get_db),
+    authenticated_user: AuthenticatedUser = Depends(get_current_user),
+):
+    user = get_or_create_user_from_auth(db, authenticated_user)
+    results = search_user_transactions(db, user.id, body.query, body.top_k)
+    return TransactionSearchResponse(
+        query=body.query,
+        results=results,
+        embeddings_enabled=settings.embeddings_enabled,
+    )

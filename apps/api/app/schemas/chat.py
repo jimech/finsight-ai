@@ -1,5 +1,5 @@
 from datetime import date, datetime
-from typing import Any, List, Optional
+from typing import List, Optional
 from uuid import UUID
 
 from pydantic import BaseModel, ConfigDict, Field
@@ -14,6 +14,12 @@ class ChatRequest(BaseModel):
 class Citation(BaseModel):
     source: str
     label: str
+    transaction_id: Optional[UUID] = None
+    date: Optional[str] = None
+    description: Optional[str] = None
+    merchant: Optional[str] = None
+    amount: Optional[float] = None
+    category: Optional[str] = None
 
 
 class ChatResponse(BaseModel):
@@ -28,7 +34,7 @@ class ChatHistoryMessage(BaseModel):
     id: UUID
     role: str
     content: str
-    citations: Optional[List[Any]] = None
+    citations: Optional[List[Citation]] = None
     created_at: datetime
 
 

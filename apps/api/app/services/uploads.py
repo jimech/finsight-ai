@@ -9,6 +9,7 @@ from uuid import UUID
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from app.core.config import settings
 from app.models.transaction import Transaction
 from app.models.uploaded_file import UploadedFile
 from app.models.user import User
@@ -173,6 +174,10 @@ def process_transaction_csv_upload(
         upload.error_message = None
         db.commit()
         db.refresh(upload)
+        if settings.embeddings_enabled:
+            from app.services.embeddings import generate_missing_embeddings_for_user
+
+            generate_missing_embeddings_for_user(db, user.id)
         return upload, len(parsed_rows)
     except CsvValidationError as exc:
         upload.status = STATUS_FAILED

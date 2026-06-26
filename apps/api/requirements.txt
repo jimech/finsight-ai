@@ -8,3 +8,4 @@ python-dotenv>=1.0.0
 PyJWT[crypto]>=2.8.0
 python-multipart>=0.0.9
 openai>=1.60.0
+pgvector>=0.3.6

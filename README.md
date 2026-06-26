@@ -90,7 +90,7 @@ Open [http://localhost:3000](http://localhost:3000). You should see the FinSight
 
 - **AI** (OpenAI) is planned but not implemented yet.
 - Dashboard is a protected placeholder; full features come in later tickets.
-- Clerk users are **not** synced to the local `users` table yet — that is the next ticket.
+- Clerk users are synced to the local `users` table on first `GET /auth/me` call.
 - See [docs/project-context.md](docs/project-context.md) for architecture and scope details.
 
 ## Authentication (Clerk)
