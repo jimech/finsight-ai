@@ -128,6 +128,8 @@ You can also copy the CSV snippet from the landing page or upload page if you pr
 
 FinSight is designed for **Vercel** (frontend) and **Render** (or similar) for the FastAPI backend.
 
+**Backend-only phase:** The API can run on Render without a deployed frontend. Set `FRONTEND_URL=http://localhost:3000` until your new UI is ready, then update CORS and Clerk redirect URLs.
+
 See **[docs/deployment.md](docs/deployment.md)** for:
 
 - Vercel and Render setup steps
@@ -137,6 +139,8 @@ See **[docs/deployment.md](docs/deployment.md)** for:
 - OpenAI configuration
 - Alembic migration commands
 - Production demo flow
+
+When wiring a new frontend to the production API, see **[docs/frontend-integration.md](docs/frontend-integration.md)** for endpoints, auth, and CORS.
 
 ### Pre-deploy verification
 

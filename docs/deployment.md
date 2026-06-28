@@ -23,6 +23,30 @@ The frontend calls the API using `NEXT_PUBLIC_API_URL`. The API verifies Clerk J
 
 ---
 
+## Backend-only phase (current)
+
+You can deploy and use the API **without a frontend**:
+
+| Component | Status |
+|-----------|--------|
+| Supabase Postgres + pgvector | Required |
+| Render FastAPI | Required |
+| Vercel frontend | Optional — add when UI is ready |
+| `FRONTEND_URL` on Render | `http://localhost:3000` until frontend exists |
+
+**Production API:** `https://finsight-ai-bse9.onrender.com`
+
+Verify after deploy:
+
+```bash
+chmod +x scripts/smoke-test-api.sh
+./scripts/smoke-test-api.sh https://finsight-ai-bse9.onrender.com
+```
+
+When a new frontend is ready, see [frontend-integration.md](frontend-integration.md) and update `FRONTEND_URL` + Clerk redirect URLs.
+
+---
+
 ## Pre-deployment checks
 
 Run these locally before deploying:

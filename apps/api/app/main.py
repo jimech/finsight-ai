@@ -27,3 +27,14 @@ app.include_router(evaluations.router)
 @app.get("/health")
 def health():
     return {"status": "ok", "service": "finsight-api"}
+
+
+@app.get("/")
+def root():
+    return {
+        "service": "finsight-api",
+        "status": "ok",
+        "docs": "/docs",
+        "health": "/health",
+        "openapi": "/openapi.json",
+    }
